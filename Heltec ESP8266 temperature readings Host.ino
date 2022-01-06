@@ -14,7 +14,7 @@ ESP8266WebServer server(80);
 #define SO_PIN 14
 Thermocouple* thermocouple;
 float celsius;
-float readingInt;
+const char * readingInt;
 
 
 
@@ -22,7 +22,12 @@ float readingInt;
 
 void handleSentVar() {
   if (server.hasArg("sensor_reading")) { // this is the variable sent from the client
-    float readingInt = server.arg("sensor_reading").toFloat();
+    // float readingInt = server.arg("sensor_reading").toFloat();
+    
+    String readingString = server.arg("sensor_reading");
+    char readingInt[50];
+    readingString.toCharArray(readingInt, 50);
+
     server.send(200, "text/html", "Data received"); // this lets the other ESP know message is received
     Serial.print("handleSentVar reached");
     Serial.print(" - readingInt = ");

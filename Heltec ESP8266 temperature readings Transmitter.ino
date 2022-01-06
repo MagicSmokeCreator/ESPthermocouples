@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <heltec.h>
+#include <stdlib.h>
 
 #include <ESP8266WiFi.h>
 const char* ssid = "ESP8266";
@@ -73,7 +74,12 @@ void loop() {
 
   // float celsius = topthermocouple->readCelsius();
   celsius = 21;
-  String intToPrint = "test";
+  // String intToPrint = "test";
+  // const char * intToPrint = celsius;
+
+  char buffer[8];
+  itoa(celsius, buffer, 10);
+  const char * intToPrint(buffer);
   
   
   // char* intToPrint[5];
@@ -95,7 +101,8 @@ void loop() {
 
   String url = "/data/";
   url += "?sensor_reading=";
-  url += intToPrint; // this needs to be a string
+  url += intToPrint; // this needs to be a const char
+  // url += "test!";
   
 
   client.print(String("GET ") + url + " HTTP/1.1\r\n" + // Sending to server
