@@ -22,7 +22,7 @@ int readingInt;
 
 void handleSentVar() {
   if (server.hasArg("sensor_reading")) { // this is the variable sent from the client
-    readingInt = server.arg("sensor_reading").toInt();
+    int readingInt = server.arg("sensor_reading").toInt();
     server.send(200, "text/html", "Data received"); // this lets the other ESP know message is received
     Serial.print("handleSentVar reached");
     Serial.print(" - readingInt = ");
