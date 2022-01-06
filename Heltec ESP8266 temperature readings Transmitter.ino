@@ -12,11 +12,13 @@ const char* WirelessSSID;
 #define CS_PIN 12
 #define SO_PIN 14
 Thermocouple* topthermocouple;
-int currentTemptop;
+int celsius;
+
+
 
 
 void displayReadingsOnOled() {
-  String temperatureDisplay = "Top temperature: " + (String)currentTemptop + "°C";
+  String temperatureDisplay = "Top temperature: " + (String)celsius + "°C";
   String WirelessSSID = "Connected to: " + (String)ssid;
 
   Heltec.display->clear();
@@ -37,6 +39,7 @@ void setup() {
   Heltec.display->flipScreenVertically();  
   Heltec.display->drawString(0,0,"Startup...");
   Heltec.display->display();
+  delay(1000);
   
   // WiFi
   WiFi.begin(ssid, password);
@@ -59,7 +62,7 @@ void setup() {
   Serial.print("WiFi connecion established @ ");
   Serial.println(WiFi.localIP());
   WirelessSSID = ssid;
-  delay(2000);
+  delay(500);
 
   // Temperature measurement
   topthermocouple = new MAX6675_Thermocouple(SCK_PIN, CS_PIN, SO_PIN);
@@ -69,12 +72,13 @@ void setup() {
 void loop() {
 
   // float celsius = topthermocouple->readCelsius();
-  int celsius = 21;
-  currentTemptop = celsius;
+  celsius = 21;
+  String intToPrint = "test";
   
-  // char intToPrint[5];
-  char intToPrint = currentTemptop;
-  // itoa(currentTemptop, intToPrint, 10);
+  
+  // char* intToPrint[5];
+  // intToPrint = celsius;
+  // itoa(celsius, intToPrint, 10);
 
   WiFiClient client;
   const char * host = "192.168.4.1";
@@ -85,22 +89,21 @@ void loop() {
     Heltec.display->clear();
     Heltec.display->drawString(0,0, "Host connection failed");
     Heltec.display->display();
-    delay(1000);
+    delay(100);
     return;
   }
 
   String url = "/data/";
   url += "?sensor_reading=";
-  url += intToPrint;
+  url += intToPrint; // this needs to be a string
   
 
   client.print(String("GET ") + url + " HTTP/1.1\r\n" + // Sending to server
                "Host: " + host + "\r\n" +
                "Connection: close\r\n\r\n");
                
-                int result = intToPrint;
                 Serial.print("Sending: ");
-                Serial.println(result);
+                Serial.println(celsius);
 
   unsigned long timeout = millis();
   while (client.available() == 0) { // Timeout
