@@ -14,7 +14,9 @@ ESP8266WebServer server(80);
 #define SO_PIN 14
 Thermocouple* thermocouple;
 float celsius;
+float topTemperature;
 const char * readingInt;
+
 
 
 
@@ -22,11 +24,16 @@ const char * readingInt;
 
 void handleSentVar() {
   if (server.hasArg("sensor_reading")) { // this is the variable sent from the client
-    // float readingInt = server.arg("sensor_reading").toFloat();
-    
-    String readingString = server.arg("sensor_reading");
+       
+    String readingString = server.arg("sensor_reading"); // converting string to char
     char readingInt[50];
     readingString.toCharArray(readingInt, 50);
+    
+    // int topTemperature = atoi(readingInt); // converting char to int
+
+    topTemperature = readingString.toFloat(); // converting string to float
+
+
 
     server.send(200, "text/html", "Data received"); // this lets the other ESP know message is received
     Serial.print("handleSentVar reached");
@@ -39,7 +46,7 @@ void handleSentVar() {
 
 void displayReadingsOnOled() {
   String temperatureDisplay = "Temperature: " + (String)celsius + "°C";
-  String Toptemp = "Top temperature: " + (String)readingInt + "°C";
+  String Toptemp = "Top temperature: " + (String)topTemperature + "°C";
 
   Heltec.display->clear();
   Heltec.display->drawString(0,0, temperatureDisplay);
@@ -83,7 +90,7 @@ void loop() {
   server.handleClient(); 
   
   celsius = thermocouple->readCelsius();
-
+  
   displayReadingsOnOled();
 
   delay(2000);
