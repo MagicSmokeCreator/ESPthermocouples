@@ -16,6 +16,8 @@ Thermocouple* thermocouple;
 float celsius;
 float topTemperature;
 const char * readingInt;
+int upperlimit = 400;
+int lowerlimit = 0;
 
 
 
@@ -33,12 +35,10 @@ void handleSentVar() {
 
     topTemperature = readingString.toFloat(); // converting string to float
 
-
-
     server.send(200, "text/html", "Data received"); // this lets the other ESP know message is received
-    Serial.print("handleSentVar reached");
-    Serial.print(" - readingInt = ");
-    Serial.println(readingInt);
+    // Serial.print("handleSentVar reached");
+    // Serial.print(" - readingInt = ");
+    // Serial.println(readingInt);
     delay(100);
   }
 
@@ -90,10 +90,17 @@ void loop() {
   server.handleClient(); 
   
   celsius = thermocouple->readCelsius();
+
+  // Serial.println(upperlimit);
+  // Serial.println(lowerlimit);
+  Serial.print("Temperature = ");
+  Serial.println(celsius);
+  Serial.print("Top temperature = ");
+  Serial.println(topTemperature);
   
   displayReadingsOnOled();
 
-  delay(2000);
+  delay(1000);
 }
 
 

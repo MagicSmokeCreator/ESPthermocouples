@@ -13,8 +13,7 @@ const char* WirelessSSID;
 #define CS_PIN 12
 #define SO_PIN 14
 Thermocouple* topthermocouple;
-int celsius;
-
+float celsius;
 
 
 
@@ -72,20 +71,13 @@ void setup() {
 
 void loop() {
 
-  // float celsius = topthermocouple->readCelsius();
-  celsius = 21;
-  // String intToPrint = "test";
-  // const char * intToPrint = celsius;
+  celsius = topthermocouple->readCelsius();
 
   char buffer[8];
   itoa(celsius, buffer, 10);
   const char * intToPrint(buffer);
   
   
-  // char* intToPrint[5];
-  // intToPrint = celsius;
-  // itoa(celsius, intToPrint, 10);
-
   WiFiClient client;
   const char * host = "192.168.4.1";
   const int httpPort = 80;
@@ -102,7 +94,6 @@ void loop() {
   String url = "/data/";
   url += "?sensor_reading=";
   url += intToPrint; // this needs to be a const char
-  // url += "test!";
   
 
   client.print(String("GET ") + url + " HTTP/1.1\r\n" + // Sending to server
